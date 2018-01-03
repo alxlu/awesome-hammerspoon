@@ -20,12 +20,20 @@ obj.modal_list = {}
 obj.active_list = {}
 obj.supervisor = nil
 
+obj.line = nil
+
 function obj:init()
     hsupervisor_keys = hsupervisor_keys or {{"cmd", "shift", "ctrl"}, "Q"}
     obj.supervisor = hs.hotkey.modal.new(hsupervisor_keys[1], hsupervisor_keys[2], 'Initialize Modal Environment')
     obj.supervisor:bind(hsupervisor_keys[1], hsupervisor_keys[2], "Reset Modal Environment", function() obj.supervisor:exit() end)
     hshelp_keys = hshelp_keys or {{"alt", "shift"}, "/"}
     obj.supervisor:bind(hshelp_keys[1], hshelp_keys[2], "Toggle Help Panel", function() obj:toggleCheatsheet({all=obj.supervisor}) end)
+
+    local cscreen = hs.screen.mainScreen()
+    local cres = cscreen:fullFrame()
+    obj.line = hs.drawing.line(hs.geometry.point(1, 15),hs.geometry.point(cres.w + 10, 15))
+    obj.line:setStrokeWidth(15)
+    obj.line:setStrokeColor(hs.drawing.color.red)
     obj.modal_tray = hs.canvas.new({x = 0, y = 0, w = 0, h = 0})
     obj.modal_tray:level(hs.canvas.windowLevels.tornOffMenu)
     obj.modal_tray[1] = {
@@ -152,6 +160,7 @@ function obj:activate(idList, trayColor, showKeys)
         })
         obj.modal_tray[1].fillColor = {hex = trayColor, alpha = 0.7}
         obj.modal_tray:show()
+        obj.line:show()
     end
     if showKeys then
         obj:toggleCheatsheet(idList, true)
@@ -171,6 +180,7 @@ function obj:deactivate(idList)
         obj.active_list[val] = nil
     end
     obj.modal_tray:hide()
+    obj.line:hide()
     for i = 2, #obj.which_key do
         obj.which_key:removeElement(2)
     end

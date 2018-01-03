@@ -55,6 +55,15 @@ for _, v in pairs(hspoon_list) do
     hs.loadSpoon(v)
 end
 
+
+hs.window.filter.default:subscribe(hs.window.filter.windowVisible, function(window, appName)
+                                     print(window:title())
+                                     if (window:title() == "Panel") then
+                                       spoon.ModalMgr:deactivateAll()
+                                       spoon.ModalMgr:activate({"resizeM"})
+                                       spoon.ModalMgr:deactivate({"resizeM"})
+                                     end
+end)
 ----------------------------------------------------------------------------------------------------
 -- Then we create/register all kinds of modal keybindings environments.
 ----------------------------------------------------------------------------------------------------
@@ -267,6 +276,7 @@ if spoon.WinWin then
     spoon.ModalMgr:new("resizeM")
     local cmodal = spoon.ModalMgr.modal_list["resizeM"]
     cmodal:bind('', 'escape', 'Deactivate resizeM', function() spoon.ModalMgr:deactivate({"resizeM"}) end)
+    cmodal:bind('alt', 'r', 'Deactivate resizeM', function() spoon.ModalMgr:deactivate({"resizeM"}) end)
     cmodal:bind('', 'Q', 'Deactivate resizeM', function() spoon.ModalMgr:deactivate({"resizeM"}) end)
     cmodal:bind('', 'tab', 'Toggle Cheatsheet', function() spoon.ModalMgr:toggleCheatsheet() end)
     cmodal:bind('', 'A', 'Move Leftward', function() spoon.WinWin:stepMove("left") end, nil, function() spoon.WinWin:stepMove("left") end)
